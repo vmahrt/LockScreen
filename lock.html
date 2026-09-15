@@ -1,0 +1,29 @@
+<html>
+<head>
+<title></title>
+
+<style type="text/css">
+	<!--
+	body {
+		background-color: #ffffbb;
+	}
+	-->
+</style>
+	<script type="text/javascript" language="JavaScript">
+	<!--
+	function lock() {
+		const sentinel = navigator.wakeLock.request("screen").then(
+		function ( sentinel ) {
+			document.body.style.backgroundColor="d7ffe5"
+			sentinel.onrelease = () => {
+				document.body.style.backgroundColor="ffacac"
+			}
+		});
+	}
+	-->
+	</script>
+</head>
+<body>
+<button onclick="lock()">lock</button>
+</body>
+</html>
