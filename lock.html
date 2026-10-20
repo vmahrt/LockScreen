@@ -1,22 +1,32 @@
-<html>
+<!DOCTYPE html>
+<html lang="de">
 <head>
-<title></title>
+    <meta charset="UTF-8">
+    <title>Analoge Uhr</title>
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: left;
+            align-items: top;
+            height: 30px;
+            #background: #f0f0f0;
+        }
 
-<style type="text/css">
-	<!--
-	body {
-		background-color: #ffffbb;
-	}
-	-->
-</style>
-	<script type="text/javascript" language="JavaScript">
+        svg {
+            width: 200px;
+            height: 200px;
+        }
+	
+    </style>
+    <script type="text/javascript" language="JavaScript">
 	<!--
 	function lock() {
 		const sentinel = navigator.wakeLock.request("screen").then(
 		function ( sentinel ) {
-			document.body.style.backgroundColor="d7ffe5"
+			document.body.style.backgroundColor="#d7ffe5"
 			sentinel.onrelease = () => {
-				document.body.style.backgroundColor="ffacac"
+				document.body.style.backgroundColor="#ffacac"
 			}
 		});
 	}
@@ -25,5 +35,103 @@
 </head>
 <body>
 <button onclick="lock()">lock</button>
+<br>
+
+<svg id="clock" viewBox="0 0 200 200" >
+
+    <!-- Zifferblatt -->
+    <circle cx="100" cy="100" r="90"
+            fill="white"
+            stroke="black"
+            stroke-width="3"/>
+
+    <!-- Stundenmarken -->
+    <g id="marks"></g>
+
+    <!-- Stundenzeiger -->
+    <line id="hourHand"
+          x1="100"
+          y1="100"
+          x2="100"
+          y2="55"
+          stroke="black"
+          stroke-width="6"
+          stroke-linecap="round" />
+
+    <!-- Minutenzeiger -->
+    <line id="minuteHand"
+          x1="100"
+          y1="100"
+          x2="100"
+          y2="30"
+          stroke="black"
+          stroke-width="3"
+          stroke-linecap="round" />
+
+    <!-- Mittelpunkt -->
+    <circle cx="100" cy="100" r="4" fill="black"/>
+
+</svg>
+
+
+<script>
+
+    // Stundenmarken zeichnen
+    const marks = document.getElementById("marks");
+
+    for (let i = 0; i < 12; i++) {
+
+        const angle = i * 30 * Math.PI / 180;
+
+        const x1 = 100 + Math.sin(angle) * 75;
+        const y1 = 100 - Math.cos(angle) * 75;
+
+        const x2 = 100 + Math.sin(angle) * 85;
+        const y2 = 100 - Math.cos(angle) * 85;
+
+        const line = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "line"
+        );
+
+        line.setAttribute("x1", x1);
+        line.setAttribute("y1", y1);
+        line.setAttribute("x2", x2);
+        line.setAttribute("y2", y2);
+        line.setAttribute("stroke", "black");
+        line.setAttribute("stroke-width", "3");
+
+        marks.appendChild(line);
+    }
+
+    function updateClock() {
+
+        const now = new Date();
+
+        const hours = now.getHours() % 12;
+        const minutes = now.getMinutes();
+
+        const minuteAngle = minutes * 6;
+        const hourAngle = hours * 30 + minutes * 0.5;
+
+        document
+            .getElementById("minuteHand")
+            .setAttribute(
+                "transform",
+                `rotate(${minuteAngle} 100 100)`
+            );
+
+        document
+            .getElementById("hourHand")
+            .setAttribute(
+                "transform",
+                `rotate(${hourAngle} 100 100)`
+            );
+    }
+
+    updateClock();
+    setInterval(updateClock, 1000);
+
+</script>
 </body>
 </html>
